@@ -35,6 +35,15 @@ public class EditorController {
     private InlineCssTextArea textArea;
 
     @FXML
+    private Label wordsLabel;
+
+    @FXML
+    private Label charsLabel;
+
+    @FXML
+    private Label charsNoSpacesLabel;
+
+    @FXML
     private Button copyBtn;
 
     // Botón para invertir el texto del área de texto
@@ -231,27 +240,26 @@ public class EditorController {
         }
     }
 
-    /**
-     * Se ejecuta al pulsar el botón de Contar (123).
-     * Muestra una ventana emergente con estadísticas del texto: caracteres (con y sin espacios) y palabras.
-     */
+
     @FXML
-    protected void onCount() {
+    public void initialize() {
+        textArea.textProperty().addListener((observable, oldValue, newValue) -> {
+            updateCounts();
+        });
+        updateCounts(); // Initial count
+    }
+
+    private void updateCounts() {
         String text = textArea.getText();
         int charCountWithSpaces = text.length();
         int charCountWithoutSpaces = text.replaceAll("\\s", "").length();
         String[] words = text.trim().split("\\s+");
         int wordCount = text.trim().isEmpty() ? 0 : words.length;
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Estadísticas del Texto");
-        alert.setHeaderText(null);
-        alert.setContentText(
-            "Caracteres (con espacios): " + charCountWithSpaces + "\n" +
-            "Caracteres (sin espacios): " + charCountWithoutSpaces + "\n" +
-            "Palabras: " + wordCount
-        );
-        alert.showAndWait();
+        //to-do ver si hay alguna manera de que no se vea la etiqueta entera
+        wordsLabel.setText("Palabras: " + wordCount);
+        charsLabel.setText("Caracteres: " + charCountWithSpaces);
+        charsNoSpacesLabel.setText("Caracteres sin espacios: " + charCountWithoutSpaces);
     }
 
     /**

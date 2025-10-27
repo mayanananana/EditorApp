@@ -1,54 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
-
+<?import javafx.scene.text.*?>
+<?import org.fxmisc.richtext.InlineCssTextArea?>
 <AnchorPane fx:id="maincontainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="401.0" prefWidth="708.0" style="-fx-background-color: gray;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.editorapp.EditorController">
    <children>
       <org.fxmisc.richtext.InlineCssTextArea fx:id="textArea" layoutX="87.0" layoutY="114.0" prefHeight="200.0" prefWidth="533.0" />
+
       <Button fx:id="boldBtn" layoutX="87.0" layoutY="53.0" mnemonicParsing="false" onAction="#onBold" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="B">
          <font>
             <Font name="System Bold" size="23.0" />
          </font>
+         <tooltip><Tooltip text="Negrita" /></tooltip>
+
       </Button>
       <Button fx:id="italicBtn" layoutX="144.0" layoutY="54.0" mnemonicParsing="false" onAction="#onItalic" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="I">
          <font>
             <Font name="System Italic" size="23.0" />
          </font>
+         <tooltip><Tooltip text="Cursiva" /></tooltip>
+
       </Button>
       <Button fx:id="upperBtn" layoutX="201.0" layoutY="54.0" mnemonicParsing="false" onAction="#onUppercase" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="AA">
          <font>
             <Font size="16.0" />
          </font>
+         <tooltip><Tooltip text="Mayusculas" /></tooltip>
+
       </Button>
       <Button fx:id="LowerBtn" layoutX="258.0" layoutY="54.0" mnemonicParsing="false" onAction="#onLowercase" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="aa">
          <font>
             <Font size="16.0" />
          </font>
+         <tooltip><Tooltip text="Minusculas" /></tooltip>
+
       </Button>
-      <Button fx:id="countBtn" layoutX="315.0" layoutY="54.0" mnemonicParsing="false" onAction="#onCount" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="123">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Button>
-      <Button fx:id="searchBtn" layoutX="372.0" layoutY="54.0" mnemonicParsing="false" onAction="#onSearch" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="🔍">
+      <Button fx:id="searchBtn" layoutX="315.0" layoutY="54.0" mnemonicParsing="false" onAction="#onSearch" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="🔍">
          <font>
             <Font size="20.0" />
          </font>
+         <tooltip><Tooltip text="Buscar" /></tooltip>
       </Button>
-      <Button fx:id="undoBtn" layoutX="429.0" layoutY="54.0" mnemonicParsing="false" onAction="#onUndo" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="↩">
+      <Button fx:id="undoBtn" layoutX="372.0" layoutY="54.0" mnemonicParsing="false" onAction="#onUndo" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="↩">
          <font>
             <Font size="25.0" />
          </font>
+         <tooltip><Tooltip text="Revertir" /></tooltip>
       </Button>
-      <Button fx:id="invertBtn" layoutX="486.0" layoutY="54.0" mnemonicParsing="false" onAction="#onInvert" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="⇅">
+      <Button fx:id="invertBtn" layoutX="429.0" layoutY="54.0" mnemonicParsing="false" onAction="#onInvert" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="⇅">
          <font>
             <Font size="25.0" />
          </font>
+         <tooltip><Tooltip text="Invertir" /></tooltip>
       </Button>
-      <Button fx:id="cleanBtn" layoutX="87.0" layoutY="328.0" mnemonicParsing="false" onAction="#onClear" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #41dc8e;" text="Limpiar" />
-      <Button fx:id="copyBtn" layoutX="188.0" layoutY="328.0" mnemonicParsing="false" onAction="#onCopy" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #35baf6;" text="Copiar" />
-      <Button fx:id="pasteBtn" layoutX="289.0" layoutY="328.0" mnemonicParsing="false" onAction="#onPaste" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #f6a635;" text="Pegar" />
+      <Button fx:id="cleanBtn" layoutX="87.0" layoutY="328.0" mnemonicParsing="false" onAction="#onClear" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #41dc8e;" text="Limpiar" >
+         <tooltip><Tooltip text="Limpiar" /></tooltip>
+      </Button>
+      <Button fx:id="copyBtn" layoutX="188.0" layoutY="328.0" mnemonicParsing="false" onAction="#onCopy" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #35baf6;" text="Copiar" >
+         <tooltip><Tooltip text="Copiar" /></tooltip>
+      </Button>
+      <Button fx:id="pasteBtn" layoutX="289.0" layoutY="328.0" mnemonicParsing="false" onAction="#onPaste" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #f6a635;" text="Pegar" >
+         <tooltip><Tooltip text="Pegar" /></tooltip>
+      </Button>
+      <Label fx:id="wordsLabel" layoutX="400.0" layoutY="328.0" text="Palabras: 0" />
+      <Label fx:id="charsLabel" layoutX="400.0" layoutY="348.0" text="Caracteres: 0" />
+      <Label fx:id="charsNoSpacesLabel" layoutX="400.0" layoutY="368.0" text="Caracteres sin espacios: 0" />
    </children>
 </AnchorPane>
