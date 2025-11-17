@@ -6,6 +6,17 @@
 <?import org.fxmisc.richtext.InlineCssTextArea?>
 <AnchorPane fx:id="maincontainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="401.0" prefWidth="708.0" style="-fx-background-color: gray;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.editorapp.EditorController">
    <children>
+      <MenuBar layoutY="2.0" prefHeight="26.0" prefWidth="708.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Archivo">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Abrir" />
+                  <MenuItem mnemonicParsing="false" onAction="#onSave" text="Guardar" />
+                  <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="Guardar como" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
       <org.fxmisc.richtext.InlineCssTextArea fx:id="textArea" layoutX="87.0" layoutY="114.0" prefHeight="200.0" prefWidth="533.0" />
 
       <Button fx:id="boldBtn" layoutX="87.0" layoutY="53.0" mnemonicParsing="false" onAction="#onBold" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="B">

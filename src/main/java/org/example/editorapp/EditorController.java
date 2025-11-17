@@ -3,12 +3,16 @@ package org.example.editorapp;
 import javafx.fxml.FXML;
 
 import javafx.animation.PauseTransition;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import javafx.scene.control.Button;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.Alert;
+
+import java.awt.*;
+import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.stage.Stage;
@@ -19,7 +23,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Insets;
 
+import org.commonmark.node.*;
+import org.commonmark.parser.Parser;
 import org.fxmisc.richtext.InlineCssTextArea;
+import org.fxmisc.richtext.model.StyleSpan;
+import org.fxmisc.richtext.model.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpansBuilder;
 
 /**
  * Controlador para la interfaz de usuario del editor definida en Editor.fxml.
@@ -192,32 +201,45 @@ public class EditorController {
     private void toggleStyle(String styleToToggle) {
         IndexRange selection = textArea.getSelection();
         if (selection.getLength() == 0) {
-            return; // No selection, do nothing
+            return;
         }
 
-        // Obtiene el estilo del primer carácter de la posición
-        String existingStyle = textArea.getStyleAtPosition(selection.getStart());
+        StyleSpans<String> styleSpans = textArea.getStyleSpans(selection.getStart(), selection.getEnd());
 
-        String newStyle;
-        if (existingStyle.contains(styleToToggle)) {
-            // El estilo está contenido, se remueve
-            newStyle = existingStyle.replace(styleToToggle, "").trim();
-        } else {
-            // No está contenido, se añade
-            newStyle = existingStyle + (existingStyle.isEmpty() ? "" : "; ") + styleToToggle;
+        // Determine if the style is present across the entire selection
+        boolean styleIsPresent = styleSpans.stream()
+                .allMatch(span -> span.getStyle().contains(styleToToggle));
+
+        StyleSpansBuilder<String> builder = new StyleSpansBuilder<>();
+        for (StyleSpan<String> span : styleSpans) {
+            String style = span.getStyle();
+            String newStyle;
+
+            if (styleIsPresent) {
+                // Remove the style
+                newStyle = style.replace(styleToToggle, "");
+            } else {
+                // Add the style if it's not already there
+                if (!style.contains(styleToToggle)) {
+                    newStyle = style + (style.isEmpty() ? "" : "; ") + styleToToggle;
+                } else {
+                    newStyle = style;
+                }
+            }
+
+            // Clean up the style string
+            newStyle = newStyle.replaceAll(";;", ";").replaceAll("\\s+;", ";").replaceAll(";\\s+", ";").trim();
+            if (newStyle.startsWith(";")) {
+                newStyle = newStyle.substring(1);
+            }
+            if (newStyle.endsWith(";")) {
+                newStyle = newStyle.substring(0, newStyle.length() - 1);
+            }
+
+            builder.add(newStyle, span.getLength());
         }
 
-        // Limpia ;; extras
-        newStyle = newStyle.replaceAll(";;", ";").replaceAll("\s+;", ";").replaceAll(";\s+", ";");
-        if (newStyle.startsWith(";")) {
-            newStyle = newStyle.substring(1);
-        }
-        if (newStyle.endsWith(";")) {
-            newStyle = newStyle.substring(0, newStyle.length() - 1);
-        }
-
-
-        textArea.setStyle(selection.getStart(), selection.getEnd(), newStyle);
+        textArea.setStyleSpans(selection.getStart(), builder.create());
     }
 
 
@@ -269,6 +291,16 @@ public class EditorController {
     @FXML
     protected void onUndo() {
         textArea.undo();
+    }
+
+//TODO hacer este botón en el editor
+    /**
+     * Se ejecuta al pulsar el botón de Redo.
+     * Rehace la última acción revertida en el editor.
+     */
+    @FXML
+    protected void onRedo(){
+        textArea.redo();
     }
 
     /**
@@ -361,6 +393,93 @@ public class EditorController {
     }
 
     /**
+     *
+     * Permite guardar un archivo en un directorio personalizado
+     */
+    @FXML
+    protected void saveFile(Stage stage) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Guardar archivo");
+
+        // Filtros para archivos de texto y Markdown
+        FileChooser.ExtensionFilter txtFilter = new FileChooser.ExtensionFilter("Archivos de texto (*.txt)", "*.txt");
+        FileChooser.ExtensionFilter mdFilter = new FileChooser.ExtensionFilter("Markdown (*.md)", "*.md");
+        fileChooser.getExtensionFilters().addAll(txtFilter, mdFilter);
+
+        File file = fileChooser.showSaveDialog(stage);
+
+        if (file != null) {
+            try (FileWriter fw = new FileWriter(file)) {
+                String contentToSave;
+                // Comprueba la extensión seleccionada para guardar
+                if (fileChooser.getSelectedExtensionFilter() == mdFilter) {
+                    contentToSave = CommonMarkConverter.toCommonMark(textArea);
+                } else {
+                    contentToSave = textArea.getText();
+                }
+                fw.write(contentToSave);
+                showAlert(Alert.AlertType.INFORMATION, "Éxito", "Archivo guardado correctamente en: " + file.getAbsolutePath());
+            } catch (IOException e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "No se pudo guardar el archivo: " + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Permite abrir archivos en el editor
+     */
+    @FXML
+    protected void onOpen() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar archivo");
+        // Filtros de extensión actualizados
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Archivos de texto y Markdown", "*.txt", "*.md"),
+                new FileChooser.ExtensionFilter("Todos los archivos", "*.*")
+        );
+
+        File file = fileChooser.showOpenDialog(textArea.getScene().getWindow());
+        if (file != null) {
+            try {
+                String content = new String(java.nio.file.Files.readAllBytes(file.toPath()));
+                if (file.getName().endsWith(".md")) {
+                    CommonMarkConverter.applyCommonMark(content, textArea);
+                }
+                else {
+                    textArea.replaceText(content);
+                }
+            } catch (IOException e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "No se pudo abrir el archivo: " + e.getMessage());
+            }
+        }
+    }
+
+    @FXML
+    protected void onSave() {
+        // For now, just call onSaveAs. Later, we can add logic to save to the current file.
+        onSaveAs();
+    }
+
+    @FXML
+    protected void onSaveAs() {
+        saveFile((Stage) textArea.getScene().getWindow());
+    }
+
+    /**
+     * Muestra una alerta en pantalla.
+     * @param alertType El tipo de alerta (información, error, etc.).
+     * @param title El título de la ventana de alerta.
+     * @param message El mensaje a mostrar.
+     */
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    /**
      * Busca la siguiente ocurrencia del término de búsqueda.
      * @param searchTerm El texto a buscar.
      * @param messageLabel La etiqueta donde mostrar mensajes al usuario.
@@ -405,31 +524,33 @@ public class EditorController {
      * @param replacement El texto por el que reemplazar.
      * @param messageLabel La etiqueta para mostrar mensajes.
      */
-    private void replaceAll(String searchTerm, String replacement, Label messageLabel) {
-        if (searchTerm.isEmpty()) return;
-
-        String text = textArea.getText();
-        Pattern pattern = Pattern.compile(Pattern.quote(searchTerm), Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(text);
-
-        int count = 0;
-        // Reemplaza todo de inicio a fin apara no tener conflicto con los indices
-        java.util.List<IndexRange> ranges = new java.util.ArrayList<>();
-        while(matcher.find()) {
-            ranges.add(new IndexRange(matcher.start(), matcher.end()));
-            count++;
+        private void replaceAll(String searchTerm, String replacement, Label messageLabel) {
+            if (searchTerm.isEmpty()) return;
+    
+            String text = textArea.getText();
+            Pattern pattern = Pattern.compile(Pattern.quote(searchTerm), Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(text);
+    
+            int count = 0;
+            // Reemplaza todo de inicio a fin apara no tener conflicto con los indices
+            java.util.List<IndexRange> ranges = new java.util.ArrayList<>();
+            while(matcher.find()) {
+                ranges.add(new IndexRange(matcher.start(), matcher.end()));
+                count++;
+            }
+    
+            for (int i = ranges.size() - 1; i >= 0; i--) {
+                IndexRange range = ranges.get(i);
+                textArea.replaceText(range, replacement);
+            }
+    
+            if (count > 0) {
+                messageLabel.setText("Se realizaron " + count + " reemplazos.");
+            } else {
+                messageLabel.setText("No se encontraron coincidencias.");
+            }
+            lastFindIndex = 0;
         }
-
-        for (int i = ranges.size() - 1; i >= 0; i--) {
-            IndexRange range = ranges.get(i);
-            textArea.replaceText(range, replacement);
-        }
-
-        if (count > 0) {
-            messageLabel.setText("Se realizaron " + count + " reemplazos.");
-        } else {
-            messageLabel.setText("No se encontraron coincidencias.");
-        }
-        lastFindIndex = 0;
-    }
-}
+    
+    
+         }
