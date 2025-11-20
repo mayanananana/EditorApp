@@ -11,7 +11,6 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.Alert;
 
-import java.awt.*;
 import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,8 +22,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Insets;
 
-import org.commonmark.node.*;
-import org.commonmark.parser.Parser;
+import org.example.editorapp.models.CommonMarkConverter;
+import org.example.editorapp.models.ProgresoSimulado;
+import org.example.editorapp.models.ProgressLabel;
+import org.example.editorapp.models.State;
 import org.fxmisc.richtext.InlineCssTextArea;
 import org.fxmisc.richtext.model.StyleSpan;
 import org.fxmisc.richtext.model.StyleSpans;
@@ -58,6 +59,9 @@ public class EditorController {
     // Botón para invertir el texto del área de texto
     @FXML
     private Button invertBtn;
+
+    @FXML
+    private ProgressLabel progresslabel;
 
     // Almacena el texto original antes de ser invertido
     private String originalText;
@@ -438,31 +442,43 @@ public class EditorController {
                 new FileChooser.ExtensionFilter("Todos los archivos", "*.*")
         );
 
+        ProgresoSimulado sim= new ProgresoSimulado(progresslabel);
+        sim.start();
         File file = fileChooser.showOpenDialog(textArea.getScene().getWindow());
         if (file != null) {
             try {
                 String content = new String(java.nio.file.Files.readAllBytes(file.toPath()));
                 if (file.getName().endsWith(".md")) {
                     CommonMarkConverter.applyCommonMark(content, textArea);
-                }
+                    sim.finish();
+                sim.restart();}
                 else {
                     textArea.replaceText(content);
+                    sim.finish();
+                    sim.restart();
                 }
             } catch (IOException e) {
+                sim.fail();
                 showAlert(Alert.AlertType.ERROR, "Error", "No se pudo abrir el archivo: " + e.getMessage());
             }
         }
+
+
     }
 
     @FXML
     protected void onSave() {
-        // For now, just call onSaveAs. Later, we can add logic to save to the current file.
+        // For now, just call onSaveAs.
         onSaveAs();
     }
 
     @FXML
     protected void onSaveAs() {
+        ProgresoSimulado sim = new ProgresoSimulado(progresslabel);
+        sim.start();
         saveFile((Stage) textArea.getScene().getWindow());
+        sim.finish();
+        sim.restart();
     }
 
     /**

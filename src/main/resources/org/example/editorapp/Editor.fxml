@@ -4,9 +4,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
 <?import org.fxmisc.richtext.InlineCssTextArea?>
+<?import org.example.editorapp.models.ProgressLabel?>
 <AnchorPane fx:id="maincontainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="401.0" prefWidth="708.0" style="-fx-background-color: gray;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.editorapp.EditorController">
    <children>
-      <MenuBar layoutY="2.0" prefHeight="26.0" prefWidth="708.0">
+      <MenuBar layoutY="2.0" prefHeight="26.0" prefWidth="708.0" style="-fx-background-color: gray;" >
         <menus>
           <Menu mnemonicParsing="false" text="Archivo">
             <items>
@@ -18,7 +19,9 @@
         </menus>
       </MenuBar>
       <org.fxmisc.richtext.InlineCssTextArea fx:id="textArea" layoutX="87.0" layoutY="114.0" prefHeight="200.0" prefWidth="533.0" />
+      <ProgressLabel fx:id="progresslabel" layoutX="500.0" layoutY="5.0" />
 
+      <!-- Botones de arriba -->
       <Button fx:id="boldBtn" layoutX="87.0" layoutY="53.0" mnemonicParsing="false" onAction="#onBold" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="B">
          <font>
             <Font name="System Bold" size="23.0" />
@@ -65,6 +68,15 @@
          </font>
          <tooltip><Tooltip text="Invertir" /></tooltip>
       </Button>
+      <Button fx:id="redoButton" layoutX="484.0" layoutY="54.0" mnemonicParsing="false" onAction="#onRedo" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="↷">
+         <font>
+            <Font size="25.0" />
+         </font>
+         <tooltip><Tooltip text="Rehacer" /></tooltip>
+      </Button>
+
+   <!-- Botones de abajo-->
+
       <Button fx:id="cleanBtn" layoutX="87.0" layoutY="328.0" mnemonicParsing="false" onAction="#onClear" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #41dc8e;" text="Limpiar" >
          <tooltip><Tooltip text="Limpiar" /></tooltip>
       </Button>
@@ -74,8 +86,9 @@
       <Button fx:id="pasteBtn" layoutX="289.0" layoutY="328.0" mnemonicParsing="false" onAction="#onPaste" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #f6a635;" text="Pegar" >
          <tooltip><Tooltip text="Pegar" /></tooltip>
       </Button>
-      <Label fx:id="wordsLabel" layoutX="400.0" layoutY="328.0" text="Palabras: 0" />
-      <Label fx:id="charsLabel" layoutX="400.0" layoutY="348.0" text="Caracteres: 0" />
-      <Label fx:id="charsNoSpacesLabel" layoutX="400.0" layoutY="368.0" text="Caracteres sin espacios: 0" />
+      <Label fx:id="wordsLabel" layoutX="500.0" layoutY="328.0" text="Palabras: 0" />
+      <Label fx:id="charsLabel" layoutX="500.0" layoutY="348.0" text="Caracteres: 0" />
+      <Label fx:id="charsNoSpacesLabel" layoutX="500.0" layoutY="368.0" text="Caracteres sin espacios: 0" />
+
    </children>
 </AnchorPane>
