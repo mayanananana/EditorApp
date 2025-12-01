@@ -35,6 +35,7 @@ public class EditorMain extends Application {
         stage.setTitle("Editor de Texto");
         stage.setScene(scene);
         stage.show();
+
     }
 
     /**

@@ -3,6 +3,8 @@ package org.example.editorapp;
 import javafx.fxml.FXML;
 
 import javafx.animation.PauseTransition;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import javafx.scene.control.Button;
@@ -22,10 +24,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Insets;
 
-import org.example.editorapp.models.CommonMarkConverter;
-import org.example.editorapp.models.ProgresoSimulado;
-import org.example.editorapp.models.ProgressLabel;
-import org.example.editorapp.models.State;
+import org.example.editorapp.CommonMark.CommonMarkConverter;
+import org.example.editorapp.ProgressLabel.ProgresoSimulado;
+import org.example.editorapp.ProgressLabel.ProgressLabel;
 import org.fxmisc.richtext.InlineCssTextArea;
 import org.fxmisc.richtext.model.StyleSpan;
 import org.fxmisc.richtext.model.StyleSpans;
@@ -36,7 +37,7 @@ import org.fxmisc.richtext.model.StyleSpansBuilder;
  * Contiene toda la lógica para manejar las interacciones del usuario, como clics en botones,
  * y para manipular el contenido y los estilos del área de texto.
  */
-public class EditorController {
+public class EditorController{
 
     private Stage findReplaceStage;
     private int lastFindIndex = 0;
@@ -247,7 +248,37 @@ public class EditorController {
     }
 
 
+    /**
+     * Método para capturar atajos de teclado en el textArea.
+     */
+    private void catchShortcuts(){
+        textArea.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if(event.isShortcutDown() && event.getCode() == KeyCode.S){
+                onSave();
+                System.out.println("Atajo para guardar");
+            } else if(event.isShortcutDown() && event.getCode() == KeyCode.V){
+                onPaste();
+                System.out.println("Atajo para pegar");
+            } else if(event.isShortcutDown() && event.getCode() == KeyCode.C){
+                onCopy();
+                System.out.println("Atajo para copiar");
+            } else if(event.isShortcutDown() && event.getCode() == KeyCode.B){
+                onBold();
+                System.out.println("Atajo para añadir negrita a una selección");
+            } else if(event.isShortcutDown() && event.getCode() == KeyCode.I){
+                onItalic();
+                System.out.println("Atajo para añadir cursiva/itálica a una selección");
+            } else if(event.isShortcutDown() && event.getCode() == KeyCode.Z){
+                onUndo();
+                System.out.println("Atajo para deshacer");
+            } else if(event.isShortcutDown() && event.getCode() == KeyCode.Y){
+                onRedo();
+                System.out.println("Atajo para rehacer");
+            }
 
+            event.consume();
+        });
+    }
 
     /**
      * Método auxiliar para transformar el texto a mayúsculas o minúsculas.
@@ -267,14 +298,27 @@ public class EditorController {
     }
 
 
+
+    /**
+     * Se llama automáticamente después de que se carga el archivo FXML.
+     * Se utiliza para configurar listeners y estados iniciales. Aquí, establece un listener
+     * para actualizar los contadores de palabras y caracteres en tiempo real mientras el usuario escribe.
+     */
     @FXML
     public void initialize() {
         textArea.textProperty().addListener((observable, oldValue, newValue) -> {
             updateCounts();
         });
         updateCounts(); // Initial count
+
+        catchShortcuts();
     }
 
+    /**
+     * Calcula y actualiza las etiquetas que muestran el número de palabras, caracteres
+     * (con y sin espacios). Se diseñó para dar feedback inmediato al usuario sobre la
+     * longitud de su texto.
+     */
     private void updateCounts() {
         String text = textArea.getText();
         int charCountWithSpaces = text.length();

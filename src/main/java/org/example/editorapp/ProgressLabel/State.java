@@ -1,4 +1,4 @@
-package org.example.editorapp.models;
+package org.example.editorapp.ProgressLabel;
 
 public enum State {
     IDLE, WORKING, FINISHED, ERROR

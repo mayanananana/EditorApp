@@ -1,5 +1,5 @@
 
-package org.example.editorapp.models;
+package org.example.editorapp.CommonMark;
 
 import org.commonmark.node.*;
 import org.commonmark.parser.Parser;

@@ -1,4 +1,4 @@
-package org.example.editorapp.models;
+package org.example.editorapp.ProgressLabel;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.StringProperty;

@@ -9,6 +9,8 @@ module org.example.editorapp {
 
     opens org.example.editorapp to javafx.fxml;
     exports org.example.editorapp;
-    exports org.example.editorapp.models;
-    opens org.example.editorapp.models to javafx.fxml;
+    exports org.example.editorapp.CommonMark;
+    opens org.example.editorapp.CommonMark to javafx.fxml;
+    exports org.example.editorapp.ProgressLabel;
+    opens org.example.editorapp.ProgressLabel to javafx.fxml;
 }
