@@ -74,6 +74,13 @@
          </font>
          <tooltip><Tooltip text="Rehacer" /></tooltip>
       </Button>
+      <Button fx:id="voiceCommandButton" layoutX="541.0" layoutY="54.0" mnemonicParsing="false" onAction="#handleVoiceCommand" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: white;" text="🎤">
+         <font>
+            <Font name="Segoe UI Emoji" size="14"/>
+            <Font size="25.0" />
+         </font>
+         <tooltip><Tooltip text="Comando de voz" /></tooltip>
+      </Button>
 
    <!-- Botones de abajo-->
 

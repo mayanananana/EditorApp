@@ -5,6 +5,8 @@ module org.example.editorapp {
     requires org.fxmisc.richtext;
     requires java.desktop;
     requires org.commonmark;
+    requires org.json;
+    requires vosk;
 
 
     opens org.example.editorapp to javafx.fxml;

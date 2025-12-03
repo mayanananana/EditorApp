@@ -3,6 +3,7 @@ package org.example.editorapp;
 import javafx.fxml.FXML;
 
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
@@ -25,6 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.geometry.Insets;
 
 import org.example.editorapp.CommonMark.CommonMarkConverter;
+import org.example.editorapp.Nui.NuiController;
 import org.example.editorapp.ProgressLabel.ProgresoSimulado;
 import org.example.editorapp.ProgressLabel.ProgressLabel;
 import org.fxmisc.richtext.InlineCssTextArea;
@@ -57,9 +59,15 @@ public class EditorController{
     @FXML
     private Button copyBtn;
 
+    @FXML
+    private Button voiceCommandButton;
+
     // Botón para invertir el texto del área de texto
     @FXML
     private Button invertBtn;
+    
+    private NuiController nuiController;
+    
 
     @FXML
     private ProgressLabel progresslabel;
@@ -312,6 +320,10 @@ public class EditorController{
         updateCounts(); // Initial count
 
         catchShortcuts();
+
+        // Initialize NUI controller
+        nuiController = new NuiController();
+        nuiController.initializeListener(this::executeVoiceCommand);
     }
 
     /**
@@ -611,6 +623,83 @@ public class EditorController{
             }
             lastFindIndex = 0;
         }
-    
-    
-         }
+
+
+    /**
+     * Se invoca al pulsar el botón de comando de voz.
+     * Inicia el proceso de escucha de comandos de voz a través del NuiController.
+     */
+    @FXML
+    private void handleVoiceCommand() {
+        System.out.println("handleVoiceCommand called");
+        nuiController.listenForCommand();
+    }
+
+    /**
+     * Ejecuta una acción en el editor basada en un comando de texto.
+     * Este método es el callback para el NuiListener.
+     * @param command El comando de texto reconocido (p. ej., "toggleBold").
+     */
+    private void executeVoiceCommand(String command) {
+        // Normaliza el comando recibido: elimina espacios y lo convierte a minúsculas.
+        String normalizedCommand = command.replaceAll("\\s+", "").toLowerCase();
+
+        // Asegurarse de que la UI se actualiza en el hilo de la aplicación de JavaFX
+        Platform.runLater(() -> {
+            switch (normalizedCommand) {
+                case "negrita":
+                case "aplicarnegrita":
+                    System.out.println("Executing command: onBold");
+                    onBold();
+                    break;
+                case "cursiva":
+                case "aplicarcursiva":
+                    System.out.println("Executing command: onItalic");
+                    onItalic();
+                    break;
+                case "mayúsculas":
+                case "convertiramayusculas":
+                    System.out.println("Executing command: onUppercase");
+                    onUppercase();
+                    break;
+                case "minusculas":
+                case "convertiraminusculas":
+                    System.out.println("Executing command: onLowercase");
+                    onLowercase();
+                    break;
+                case "guardar":
+                case "guardardocumento":
+                    System.out.println("Executing command: onSave");
+                    onSave();
+                    break;
+                case "abrir":
+                case "abrirdocumento":
+                    System.out.println("Executing command: onOpen");
+                    onOpen();
+                    break;
+                case "copiar":
+                    System.out.println("Executing command: onCopy");
+                    onCopy();
+                    break;
+                case "pegar":
+                    System.out.println("Executing command: onPaste");
+                    onPaste();
+                    break;
+                case "deshacer":
+                    System.out.println("Executing command: onUndo");
+                    onUndo();
+                    break;
+                case "rehacer":
+                    System.out.println("Executing command: onRedo");
+                    onRedo();
+                    break;
+                default:
+                    System.out.println("Comando no existente: " + command);
+                    break;
+            }
+        });
+    }
+}
+
+
+

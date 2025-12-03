@@ -1,6 +1,8 @@
 package org.example.editorapp.Nui;
 
-public interface NuiListenerInterface {
-    void onCommand(NuiCommand cmd, String payload);
+import java.util.function.Consumer;
 
+public interface NuiListenerInterface {
+    void setCommandCallback(Consumer<String> callback);
+    void startListening();
 }
