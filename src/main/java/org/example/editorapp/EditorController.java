@@ -1,28 +1,25 @@
 package org.example.editorapp;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
-import javafx.scene.control.Button;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.control.IndexRange;
-import javafx.scene.control.Alert;
 
 import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.geometry.Insets;
 
 import org.example.editorapp.CommonMark.CommonMarkConverter;
@@ -43,6 +40,8 @@ public class EditorController{
 
     private Stage findReplaceStage;
     private int lastFindIndex = 0;
+
+    private boolean isDictationRunning;
 
     @FXML
     private InlineCssTextArea textArea;
@@ -71,6 +70,16 @@ public class EditorController{
 
     @FXML
     private ProgressLabel progresslabel;
+
+    @FXML
+    private Label logVosk; // TODO implementar en la interfaz
+
+    @FXML
+    private ToggleButton dictationToggleButton;
+
+
+
+    // TODO cambiar color de boton cuando esta presionado
 
     // Almacena el texto original antes de ser invertido
     private String originalText;
@@ -113,6 +122,22 @@ public class EditorController{
         transformSelection(false);
     }
 
+    @FXML
+    protected void dictationToggleMethod() {
+        if(!isDictationRunning) {
+            dictationToggleButton.setStyle("-fx-background-color: red; -fx-text-fill: white;");
+            nuiController.startDictation();
+            isDictationRunning = true;
+            logVosk.setText("Dictado iniciado...");
+            System.out.println("Iniciando dictado");
+        } else {
+            dictationToggleButton.setStyle(""); // Revert to default style
+            nuiController.stopDictation();
+            isDictationRunning = false;
+            logVosk.setText("Dictado finalizado.");
+            System.out.println("Finalizando dictado");
+        }
+    }
 
     /**
      * Se ejecuta al pulsar el botón de Copiar.
@@ -323,8 +348,9 @@ public class EditorController{
 
         // Initialize NUI controller
         nuiController = new NuiController();
-        nuiController.initializeListener(this::executeVoiceCommand);
+        nuiController.initializeListener(this::executeVoiceCommand, this::dictationCallBack);
     }
+
 
     /**
      * Calcula y actualiza las etiquetas que muestran el número de palabras, caracteres
@@ -343,6 +369,7 @@ public class EditorController{
         charsLabel.setText("Caracteres: " + charCountWithSpaces);
         charsNoSpacesLabel.setText("Caracteres sin espacios: " + charCountWithoutSpaces);
     }
+
 
     /**
      * Se ejecuta al pulsar el botón de Deshacer.
@@ -632,6 +659,7 @@ public class EditorController{
     @FXML
     private void handleVoiceCommand() {
         System.out.println("handleVoiceCommand called");
+        logVosk.setText("Escuchando comando...");
         nuiController.listenForCommand();
     }
 
@@ -644,8 +672,10 @@ public class EditorController{
         // Normaliza el comando recibido: elimina espacios y lo convierte a minúsculas.
         String normalizedCommand = command.replaceAll("\\s+", "").toLowerCase();
 
+
         // Asegurarse de que la UI se actualiza en el hilo de la aplicación de JavaFX
         Platform.runLater(() -> {
+            logVosk.setText("Escucha finalizada. Comando: " + command);
             switch (normalizedCommand) {
                 case "negrita":
                 case "aplicarnegrita":
@@ -658,11 +688,13 @@ public class EditorController{
                     onItalic();
                     break;
                 case "mayúsculas":
-                case "convertiramayusculas":
+                case "mayúscula":
+                case "convertiramáyusculas":
                     System.out.println("Executing command: onUppercase");
                     onUppercase();
                     break;
-                case "minusculas":
+                case "minúsculas":
+                case "minúscula":
                 case "convertiraminusculas":
                     System.out.println("Executing command: onLowercase");
                     onLowercase();
@@ -693,12 +725,31 @@ public class EditorController{
                     System.out.println("Executing command: onRedo");
                     onRedo();
                     break;
+                case "limpiar":
+                    System.out.println("Executing command: onClear");
+                    onClear();
+                    break;
                 default:
+                    logVosk.setText("Comando no reconocido: " + command);
                     System.out.println("Comando no existente: " + command);
                     break;
             }
         });
+
     }
+
+    @FXML
+    private void dictationCallBack(String TranscribedText) {
+        System.out.println("Dictation callback received: " + TranscribedText);
+        Platform.runLater(() -> {
+            if (TranscribedText != null && !TranscribedText.isEmpty()) {
+                logVosk.setText("Detectado: " + TranscribedText);
+                textArea.appendText(TranscribedText + " ");
+            }
+        });
+    }
+
+
 }
 
 

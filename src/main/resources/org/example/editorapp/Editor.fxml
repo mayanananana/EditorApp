@@ -77,10 +77,16 @@
       <Button fx:id="voiceCommandButton" layoutX="541.0" layoutY="54.0" mnemonicParsing="false" onAction="#handleVoiceCommand" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: white;" text="🎤">
          <font>
             <Font name="Segoe UI Emoji" size="14"/>
-            <Font size="25.0" />
+            <Font size="14.0" />
          </font>
          <tooltip><Tooltip text="Comando de voz" /></tooltip>
       </Button>
+      <ToggleButton fx:id="dictationToggleButton" layoutX="598.0" layoutY="54.0" mnemonicParsing="false" onAction="#dictationToggleMethod" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: white;" text="REC">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+         <tooltip><Tooltip text="Iniciar/Detener dictado" /></tooltip>
+      </ToggleButton>
 
    <!-- Botones de abajo-->
 
@@ -96,6 +102,9 @@
       <Label fx:id="wordsLabel" layoutX="500.0" layoutY="328.0" text="Palabras: 0" />
       <Label fx:id="charsLabel" layoutX="500.0" layoutY="348.0" text="Caracteres: 0" />
       <Label fx:id="charsNoSpacesLabel" layoutX="500.0" layoutY="368.0" text="Caracteres sin espacios: 0" />
+
+      <Label fx:id="logVosk" layoutX="100.0" layoutY="368.0" text="Log del Vosk" />
+
 
    </children>
 </AnchorPane>
