@@ -339,6 +339,7 @@ public class EditorController{
      */
     @FXML
     public void initialize() {
+        textArea.setWrapText(true);
         textArea.textProperty().addListener((observable, oldValue, newValue) -> {
             updateCounts();
         });
