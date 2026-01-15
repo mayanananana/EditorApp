@@ -103,7 +103,7 @@
       <Label fx:id="charsLabel" layoutX="500.0" layoutY="348.0" text="Caracteres: 0" />
       <Label fx:id="charsNoSpacesLabel" layoutX="500.0" layoutY="368.0" text="Caracteres sin espacios: 0" />
 
-      <Label fx:id="logVosk" layoutX="100.0" layoutY="368.0" text="Log del Vosk" />
+      <Label fx:id="logVosk" layoutX="100.0" layoutY="368.0" text="Aquí se mostrará info de tus operaciones :)" />
 
 
    </children>

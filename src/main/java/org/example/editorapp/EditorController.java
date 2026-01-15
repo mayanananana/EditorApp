@@ -661,6 +661,7 @@ public class EditorController{
     private void handleVoiceCommand() {
         System.out.println("handleVoiceCommand called");
         logVosk.setText("Escuchando comando...");
+        voiceCommandButton.setStyle("-fx-background-color: red;");
         nuiController.listenForCommand();
     }
 
@@ -676,6 +677,7 @@ public class EditorController{
 
         // Asegurarse de que la UI se actualiza en el hilo de la aplicación de JavaFX
         Platform.runLater(() -> {
+            voiceCommandButton.setStyle("-fx-background-color: white;");
             logVosk.setText("Escucha finalizada. Comando: " + command);
             switch (normalizedCommand) {
                 case "negrita":
@@ -749,8 +751,6 @@ public class EditorController{
             }
         });
     }
-
-
 }
 
 
