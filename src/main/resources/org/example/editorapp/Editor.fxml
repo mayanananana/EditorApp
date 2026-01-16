@@ -5,14 +5,15 @@
 <?import javafx.scene.text.*?>
 <?import org.fxmisc.richtext.InlineCssTextArea?>
 <?import org.example.editorapp.ProgressLabel.*?>
-<AnchorPane fx:id="maincontainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="401.0" prefWidth="708.0" style="-fx-background-color: gray;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.editorapp.EditorController">
+<AnchorPane fx:id="maincontainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="401.0" prefWidth="708.0"
+            style="-fx-background-color: #CAD8E6;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.editorapp.EditorController">
    <children>
-      <MenuBar layoutY="2.0" prefHeight="26.0" prefWidth="708.0" style="-fx-background-color: gray;" >
+      <MenuBar layoutY="2.0" prefHeight="26.0" prefWidth="708.0" style="-fx-background-color: #CAD8E6;" >
         <menus>
           <Menu mnemonicParsing="false" text="Archivo">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Abrir" />
-                  <MenuItem mnemonicParsing="false" onAction="#onSave" text="Guardar" />
+                  <MenuItem mnemonicParsing="false" onAction="#onSave" text="Guardar (Ctrl+S)" />
                   <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="Guardar como" />
             </items>
           </Menu>
@@ -26,14 +27,14 @@
          <font>
             <Font name="System Bold" size="23.0" />
          </font>
-         <tooltip><Tooltip text="Negrita" /></tooltip>
+         <tooltip><Tooltip text="Negrita (Ctrl+B)" /></tooltip>
 
       </Button>
       <Button fx:id="italicBtn" layoutX="144.0" layoutY="54.0" mnemonicParsing="false" onAction="#onItalic" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="I">
          <font>
             <Font name="System Italic" size="23.0" />
          </font>
-         <tooltip><Tooltip text="Cursiva" /></tooltip>
+         <tooltip><Tooltip text="Cursiva (Ctrl+I)" /></tooltip>
 
       </Button>
       <Button fx:id="upperBtn" layoutX="201.0" layoutY="54.0" mnemonicParsing="false" onAction="#onUppercase" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="AA">
@@ -60,7 +61,7 @@
          <font>
             <Font size="25.0" />
          </font>
-         <tooltip><Tooltip text="Revertir" /></tooltip>
+         <tooltip><Tooltip text="Revertir (Ctrl+Z)" /></tooltip>
       </Button>
       <Button fx:id="invertBtn" layoutX="429.0" layoutY="54.0" mnemonicParsing="false" onAction="#onInvert" prefHeight="50.0" prefWidth="47.0" style="-fx-background-color: white;" text="⇅">
          <font>
@@ -72,20 +73,20 @@
          <font>
             <Font size="25.0" />
          </font>
-         <tooltip><Tooltip text="Rehacer" /></tooltip>
+         <tooltip><Tooltip text="Rehacer (Ctrl+Y)" /></tooltip>
       </Button>
       <Button fx:id="voiceCommandButton" layoutX="541.0" layoutY="54.0" mnemonicParsing="false" onAction="#handleVoiceCommand" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: white;" text="🎤">
          <font>
             <Font name="Segoe UI Emoji" size="14"/>
             <Font size="14.0" />
          </font>
-         <tooltip><Tooltip text="Comando de voz" /></tooltip>
+         <tooltip><Tooltip text="Comando de voz (Ctrl+L)" /></tooltip>
       </Button>
       <ToggleButton fx:id="dictationToggleButton" layoutX="598.0" layoutY="54.0" mnemonicParsing="false" onAction="#dictationToggleMethod" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: white;" text="REC">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
-         <tooltip><Tooltip text="Iniciar/Detener dictado" /></tooltip>
+         <tooltip><Tooltip text="Iniciar/Detener dictado (Ctrl+D)" /></tooltip>
       </ToggleButton>
 
    <!-- Botones de abajo-->
@@ -94,10 +95,10 @@
          <tooltip><Tooltip text="Limpiar" /></tooltip>
       </Button>
       <Button fx:id="copyBtn" layoutX="188.0" layoutY="328.0" mnemonicParsing="false" onAction="#onCopy" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #35baf6;" text="Copiar" >
-         <tooltip><Tooltip text="Copiar" /></tooltip>
+         <tooltip><Tooltip text="Copiar (Ctrl+C)" /></tooltip>
       </Button>
       <Button fx:id="pasteBtn" layoutX="289.0" layoutY="328.0" mnemonicParsing="false" onAction="#onPaste" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #f6a635;" text="Pegar" >
-         <tooltip><Tooltip text="Pegar" /></tooltip>
+         <tooltip><Tooltip text="Pegar (Ctrl+V)" /></tooltip>
       </Button>
       <Label fx:id="wordsLabel" layoutX="500.0" layoutY="328.0" text="Palabras: 0" />
       <Label fx:id="charsLabel" layoutX="500.0" layoutY="348.0" text="Caracteres: 0" />

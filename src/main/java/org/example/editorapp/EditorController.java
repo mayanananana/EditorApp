@@ -307,7 +307,14 @@ public class EditorController{
             } else if(event.isShortcutDown() && event.getCode() == KeyCode.Y){
                 onRedo();
                 System.out.println("Atajo para rehacer");
+            } else if(event.isShortcutDown() && event.getCode() == KeyCode.D){
+                dictationToggleMethod();
+                System.out.println("Atajo para empezar dictado");
+            } else if(event.isShortcutDown() && event.getCode() == KeyCode.L){
+                handleVoiceCommand();
+                System.out.println("Atajo para ejecutar un comando de voz");
             }
+
 
             event.consume();
         });
